@@ -1,0 +1,25 @@
+.DS_Store
+.vscode
+.venv
+__pycache__
+*_temp.*
+temp.*
+**/temp/
+*_IGNORE
+
+# various agent files
+IMPLEMENTATION-SUMMARY.md
+.agent
+copilot-instructions.md
+AGENTS.md
+CLAUDE.md
+
+# latex stuff
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.gz
+*.fdb_latexmk
+*.fls

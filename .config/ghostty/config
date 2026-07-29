@@ -1,0 +1,46 @@
+# https://ghostty.org/docs/config
+
+# Reload config
+keybind = super+shift+comma=reload_config
+
+background=#1c1c20
+background-opacity=0.90
+background-blur=10
+split-divider-color = #888888
+
+shell-integration-features=no-cursor
+cursor-style=block
+cursor-style-blink=false
+
+cursor-click-to-move=true
+
+mouse-hide-while-typing=true
+
+font-family=JetBrainsMono Nerd Font Mono
+font-size=16
+
+font-feature = -calt, -liga, -dlig
+
+# Create splits (Vim-like, but with super added)
+keybind = super+ctrl+w>s=new_split:down
+keybind = super+ctrl+w>v=new_split:right
+
+# Navigate splits (no prefix)
+keybind = super+ctrl+h=goto_split:left
+keybind = super+ctrl+j=goto_split:down
+keybind = super+ctrl+k=goto_split:up
+keybind = super+ctrl+l=goto_split:right
+
+# Resize splits (super+ctrl+Arrows)
+keybind = super+ctrl+up=resize_split:up,40
+keybind = super+ctrl+down=resize_split:down,40
+keybind = super+ctrl+left=resize_split:left,40
+keybind = super+ctrl+right=resize_split:right,40
+
+# Close current pane/split (like Vim <C-w>c)
+keybind = super+ctrl+w>c=close_surface
+
+# Font size controls
+keybind = super+ctrl+equal=increase_font_size:1
+keybind = super+ctrl+minus=decrease_font_size:1
+keybind = super+ctrl+zero=reset_font_size

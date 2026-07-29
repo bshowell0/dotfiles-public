@@ -1,0 +1,12 @@
+.DS_Store
+.vscode/
+.venv/
+__pycache__/
+*.signers
+
+.config/fish/completions/
+.config/fish/fish_variables
+
+.zcompdump*
+.zsh_history
+.zsh_sessions/

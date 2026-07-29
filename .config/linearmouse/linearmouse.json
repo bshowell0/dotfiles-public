@@ -1,0 +1,67 @@
+{
+  "$schema" : "https:\/\/schema.linearmouse.app\/0.10.2",
+  "schemes" : [
+    {
+      "if" : {
+        "device" : {
+          "category" : "mouse",
+          "productID" : "0xd038",
+          "productName" : "Keychron 4K Link",
+          "vendorID" : "0x3434"
+        }
+      },
+      "pointer" : {
+        "acceleration" : 0.75,
+        "disableAcceleration" : true
+      },
+      "scrolling" : {
+        "acceleration" : 1,
+        "distance" : {
+          "horizontal" : 3,
+          "vertical" : 5
+        },
+        "speed" : 0
+      }
+    },
+    {
+      "if" : {
+        "device" : {
+          "category" : "trackpad",
+          "productID" : "0x343",
+          "productName" : "Apple Internal Keyboard \/ Trackpad",
+          "vendorID" : "0x5ac"
+        }
+      },
+      "pointer" : {
+        "acceleration" : 0.7,
+        "disableAcceleration" : false,
+        "speed" : 0.1
+      },
+      "scrolling" : {
+        "acceleration" : {
+          "vertical" : 1
+        },
+        "distance" : {
+          "vertical" : "auto"
+        },
+        "speed" : {
+          "vertical" : 0
+        }
+      }
+    },
+    {
+      "if" : {
+        "device" : {
+          "category" : "mouse",
+          "productID" : "0xc52f",
+          "productName" : "USB Receiver",
+          "vendorID" : "0x46d"
+        }
+      },
+      "scrolling" : {
+        "acceleration" : 0,
+        "speed" : 25
+      }
+    }
+  ]
+}

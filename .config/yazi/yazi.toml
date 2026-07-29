@@ -1,0 +1,10 @@
+[mgr]
+
+sort_by = "natural"
+sort_translit = true
+linemode = "mtime"
+show_hidden = true
+
+[preview]
+
+image_quality = 65

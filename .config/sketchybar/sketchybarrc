@@ -1,0 +1,195 @@
+# This is a demo config to showcase some of the most important commands.
+# It is meant to be changed and configured, as it is intentionally kept sparse.
+# For a (much) more advanced configuration example see my dotfiles:
+# https://github.com/FelixKratz/dotfiles
+
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+
+##### Bar Appearance #####
+# Configuring the general appearance of the bar.
+# These are only some of the options available. For all options see:
+# https://felixkratz.github.io/SketchyBar/config/bar
+# If you are looking for other colors, see the color picker:
+# https://felixkratz.github.io/SketchyBar/config/tricks#color-picker
+
+sketchybar --bar position=top height=32 blur_radius=30 color=0x40000000
+
+##### Changing Defaults #####
+# We now change some default values, which are applied to all further items.
+# For a full list of all available item properties see:
+# https://felixkratz.github.io/SketchyBar/config/items
+
+default=(
+  padding_left=5
+  padding_right=5
+  icon.font="JetBrainsMono Nerd Font:Bold:18.0"
+  label.font="JetBrains Mono:Bold:16.0"
+  icon.color=0xffffffff
+  label.color=0xffffffff
+  icon.padding_left=4
+  icon.padding_right=4
+  label.padding_left=4
+  label.padding_right=4
+)
+sketchybar --default "${default[@]}"
+
+##### Adding Mission Control Space Indicators #####
+# Let's add some mission control spaces:
+# https://felixkratz.github.io/SketchyBar/config/components#space----associate-mission-control-spaces-with-an-item
+# to indicate active and available mission control spaces.
+
+##### Aerospace Events #####
+sketchybar --add event aerospace_workspace_change
+sketchybar --add event aerospace_mode_change
+
+##### Service-mode asterisk (leftmost) #####
+sketchybar --add item aerospace_mode left \
+  --set aerospace_mode \
+    icon="*" \
+    label.drawing=off \
+    icon.color=0xffffffff \
+    icon.font="JetBrainsMono Nerd Font:Bold:24.0" \
+    drawing=off \
+    script="$PLUGIN_DIR/aerospace_mode.sh" \
+  --subscribe aerospace_mode aerospace_mode_change
+
+##### Focused workspace pill #####
+sketchybar --add item focused_workspace left \
+  --set focused_workspace \
+    label="$(aerospace list-workspaces --focused)" \
+    icon.drawing=off \
+    background.color=0x44ffffff \
+    background.corner_radius=5 \
+    background.height=20 \
+    background.padding_top=2 \
+    background.padding_bottom=2 \
+    background.drawing=on \
+    label.padding_left=7 \
+    label.padding_right=7
+
+##### Left-side app info #####
+sketchybar --add item chevron left \
+  --set chevron \
+    icon= \
+    label.drawing=off
+
+sketchybar --add item front_app left \
+  --set front_app \
+    icon.drawing=off \
+    script="$PLUGIN_DIR/front_app.sh" \
+  --subscribe front_app front_app_switched
+
+sketchybar --add item separator left \
+  --set separator \
+    icon=│ \
+    label.drawing=off \
+    icon.color=0x88ffffff \
+    icon.padding_left=10 \
+    icon.padding_right=10
+
+##### Workspace reconciler (hidden) #####
+# Creates missing space.$id items, shows non-empty non-focused, hides focused + empties,
+# and keeps the focused_workspace label in sync.
+sketchybar --add item aerospace_sync left \
+  --set aerospace_sync \
+    drawing=off \
+    script="$PLUGIN_DIR/aerospace_sync.sh" \
+  --subscribe aerospace_sync aerospace_workspace_change
+
+# ##### Adding AeroSpace Workspace Indicators #####
+# # Set up events for workspace and mode changes
+# sketchybar --add event aerospace_workspace_change
+# sketchybar --add event aerospace_mode_change
+# 
+# # Add service mode indicator (leftmost)
+# sketchybar --add item aerospace_mode left \
+#   --set aerospace_mode \
+#     icon="*" \
+#     label.drawing=off \
+#     icon.color=0xffffffff \
+#     icon.font="JetBrainsMono Nerd Font:Bold:24.0" \
+#     drawing=off \
+#     script="$PLUGIN_DIR/aerospace_mode.sh" \
+#   --subscribe aerospace_mode aerospace_mode_change
+# 
+# # Add focused workspace indicator
+# sketchybar --add item focused_workspace left \
+#   --set focused_workspace \
+#     label="$(aerospace list-workspaces --focused)" \
+#     icon.drawing=off \
+#     background.color=0x44ffffff \
+#     background.corner_radius=5 \
+#     background.height=20 \
+#     background.padding_top=2 \
+#     background.padding_bottom=2 \
+#     background.drawing=on \
+#     label.padding_left=7 \
+#     label.padding_right=7 \
+#     script='sketchybar --set "$NAME" label="$FOCUSED_WORKSPACE"' \
+#   --subscribe focused_workspace aerospace_workspace_change
+# 
+# ##### Adding Left Items #####
+# # Chevron and front app
+# sketchybar --add item chevron left \
+#            --set chevron icon= label.drawing=off \
+#            --add item front_app left \
+#            --set front_app icon.drawing=off script="$PLUGIN_DIR/front_app.sh" \
+#            --subscribe front_app front_app_switched \
+#            --add item separator left \
+#            --set separator icon=│ label.drawing=off icon.color=0x88ffffff icon.padding_left=10 icon.padding_right=10
+# 
+# # Add all non-empty workspaces on all monitors (after separator)
+# # These will be dynamically shown/hidden based on focus state
+# FOCUSED=$(aerospace list-workspaces --focused)
+# for monitor in $(aerospace list-monitors | awk '{print $1}'); do
+#   for sid in $(aerospace list-workspaces --monitor "$monitor" --empty no); do
+#     # Determine if this workspace should be initially visible
+#     if [ "$sid" = "$FOCUSED" ]; then
+#       INITIAL_DRAWING="off"
+#     else
+#       INITIAL_DRAWING="on"
+#     fi
+# 
+#     sketchybar --add item space.$sid left \
+#       --subscribe space.$sid aerospace_workspace_change \
+#       --set space.$sid \
+#         drawing="$INITIAL_DRAWING" \
+#         padding_left=2 \
+#         padding_right=2 \
+#         background.color=0x44ffffff \
+#         background.corner_radius=5 \
+#         background.height=20 \
+#         background.drawing=off \
+#         label="$sid" \
+#         label.padding_left=5 \
+#         label.padding_right=5 \
+#         click_script="aerospace workspace $sid" \
+#         script="$PLUGIN_DIR/aerospace.sh $sid"
+#   done
+# done
+
+##### Adding Right Items #####
+# In the same way as the left items we can add items to the right side.
+# Additional position (e.g. center) are available, see:
+# https://felixkratz.github.io/SketchyBar/config/items#adding-items-to-sketchybar
+
+# Some items refresh on a fixed cycle, e.g. the clock runs its script once
+# every 10s. Other items respond to events they subscribe to, e.g. the
+# volume.sh script is only executed once an actual change in system audio
+# volume is registered. More info about the event system can be found here:
+# https://felixkratz.github.io/SketchyBar/config/events
+#
+
+sketchybar --add item clock right \
+           --set clock update_freq=1 icon= script="$PLUGIN_DIR/clock.sh" \
+           --add item cal right \
+           --set cal update_freq=120 icon=󰃭  script="$PLUGIN_DIR/cal.sh" \
+           --add item volume right \
+           --set volume script="$PLUGIN_DIR/volume.sh" \
+           --subscribe volume volume_change \
+           --add item battery right \
+           --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
+           --subscribe battery system_woke power_source_change
+
+##### Force all scripts to run the first time (never do this in a script) #####
+sketchybar --update
