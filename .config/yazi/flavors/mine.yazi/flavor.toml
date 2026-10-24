@@ -1,0 +1,117 @@
+# Local palette shared with Neovim colors/mine.lua and the shell theme.
+# Explicit RGB colors keep this independent of the parent terminal's ANSI palette.
+# Targets Yazi 26.9.1; preview syntax colors live in tmtheme.xml beside this file.
+
+[app]
+overall = { bg = "#1c1c20" }
+
+[mgr]
+cwd = { fg = "#39BAE6" }
+find_keyword = { fg = "#ff79c6", bold = true, underline = true }
+find_position = { fg = "#E6B450", bg = "#1c1c20", bold = true }
+symlink_target = { fg = "#878787", italic = true }
+marker_copied = { fg = "#66dd44", bg = "#66dd44" }
+marker_cut = { fg = "#FF3333", bg = "#FF3333" }
+marker_marked = { fg = "#95E6CB", bg = "#95E6CB" }
+marker_selected = { fg = "#E6B450", bg = "#E6B450" }
+count_copied = { fg = "#1c1c20", bg = "#66dd44" }
+count_cut = { fg = "#1c1c20", bg = "#FF3333" }
+count_selected = { fg = "#1c1c20", bg = "#E6B450" }
+border_style = { fg = "#4e4e55" }
+
+[tabs]
+active = { fg = "#1c1c20", bg = "#af87ff", bold = true }
+inactive = { fg = "#878787", bg = "#232329" }
+
+[mode]
+normal_main = { fg = "#1c1c20", bg = "#af87ff", bold = true }
+normal_alt = { fg = "#af87ff", bg = "#232329" }
+select_main = { fg = "#1c1c20", bg = "#E6B450", bold = true }
+select_alt = { fg = "#E6B450", bg = "#232329" }
+unset_main = { fg = "#1c1c20", bg = "#FF3333", bold = true }
+unset_alt = { fg = "#FF3333", bg = "#232329" }
+
+[indicator]
+parent = { fg = "#B3B1AD", bg = "#403729" }
+current = { fg = "#B3B1AD", bg = "#4d4230", bold = true }
+preview = { fg = "#B3B1AD", bg = "#403729", underline = true }
+
+[status]
+overall = { fg = "#B3B1AD", bg = "#232329" }
+perm_sep = { fg = "#4e4e55" }
+perm_type = { fg = "#af87ff" }
+perm_read = { fg = "#E6B450" }
+perm_write = { fg = "#FF3333" }
+perm_exec = { fg = "#95E6CB" }
+progress_label = { fg = "#B3B1AD", bold = true }
+progress_normal = { fg = "#66dd44", bg = "#232329" }
+progress_error = { fg = "#FF3333", bg = "#232329" }
+
+[which]
+border = { fg = "#4e4e55" }
+cand = { fg = "#af87ff" }
+rest = { fg = "#878787" }
+desc = { fg = "#B3B1AD" }
+separator_style = { fg = "#4e4e55" }
+
+[confirm]
+border = { fg = "#4e4e55" }
+title = { fg = "#E6B450", bold = true }
+body = { fg = "#B3B1AD" }
+list = { fg = "#39BAE6" }
+btn_yes = { fg = "#1c1c20", bg = "#66dd44", bold = true }
+btn_no = { fg = "#878787" }
+
+[spot]
+border = { fg = "#4e4e55" }
+title = { fg = "#E6B450" }
+tbl_col = { fg = "#39BAE6" }
+tbl_cell = { fg = "#B3B1AD", bg = "#4d4230" }
+
+[notify]
+title_info = { fg = "#39BAE6" }
+title_warn = { fg = "#E6B450" }
+title_error = { fg = "#FF3333" }
+icon_info = ""
+icon_warn = ""
+icon_error = ""
+
+[pick]
+border = { fg = "#4e4e55" }
+active = { fg = "#B3B1AD", bg = "#4d4230", bold = true }
+inactive = { fg = "#B3B1AD" }
+
+[input]
+border = { fg = "#4e4e55" }
+title = { fg = "#E6B450" }
+value = { fg = "#B3B1AD" }
+selected = { fg = "#B3B1AD", bg = "#403729" }
+
+[cmp]
+border = { fg = "#4e4e55" }
+active = { fg = "#B3B1AD", bg = "#4d4230" }
+inactive = { fg = "#878787" }
+
+[tasks]
+border = { fg = "#4e4e55" }
+title = { fg = "#E6B450" }
+hovered = { fg = "#B3B1AD", bg = "#4d4230" }
+
+[help]
+border = { fg = "#4e4e55" }
+chord = { fg = "#af87ff" }
+action = { fg = "#ff8700" }
+hovered = { fg = "#B3B1AD", bg = "#4d4230", bold = true }
+
+[filetype]
+rules = [
+    { mime = "**/image/*", fg = "#95E6CB" },
+    { mime = "**/{audio,video}/*", fg = "#E6B450" },
+    { mime = "**/application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "#ff8700" },
+    { mime = "**/application/{pdf,doc,rtf}", fg = "#af87ff" },
+    { mime = "vfs/{absent,stale}", fg = "#878787" },
+    { url = "*", is = "orphan", fg = "#FF3333" },
+    { url = "*", is = "exec", fg = "#66dd44" },
+    { url = "*/", fg = "#39BAE6" },
+    { url = "*", fg = "#B3B1AD" },
+]

@@ -1,7 +1,3 @@
-# Kiro CLI pre block. Keep at the top of this file.
-[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh" ]] &&
-  builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.pre.zsh"
-
 export ZSH="${ZSH:-$HOME/.oh-my-zsh}"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
@@ -72,11 +68,57 @@ else
   bindkey -v
 fi
 
+# Try exact case before falling back to case-insensitive matching. Oh My Zsh sets
+# matcher-list unconditionally in lib/completion.zsh, so this has to come after it
+# is sourced rather than living with the other completion styles near the top.
+#
+# The leading '' matters for more than tidiness: with only a case-insensitive spec,
+# zsh treats C and c as the same character, so tabbing on an empty word in a
+# directory holding CMakeLists.txt and code/ finds a one-character common prefix
+# and inserts whichever case sorts first -- "C". fzf-tab then seeds fzf's query
+# with that C, and fzf's smart-case reads the capital as deliberate and hides
+# code/. Matching exact case first makes C and c distinct, so there is no common
+# prefix, nothing is inserted, and the picker opens on the full list.
+#
+# Trade-off: a lowercase word now completes only to lowercase matches when any
+# exist, so "c" resolves straight to code/ and never offers CMakeLists.txt.
+zstyle ':completion:*' matcher-list '' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'r:|=*' 'l:|=* r:|=*'
+
 KEYTIMEOUT=1
 if (( $+widgets[autosuggest-accept] )); then
   bindkey -M viins '^F' autosuggest-accept
   bindkey -M emacs '^F' autosuggest-accept
 fi
+
+# Replaces nickeb96/puffer-fish from the Fish config: a third dot after ".."
+# becomes "/..", so "....." types out as "../../../..". Oh My Zsh already ships
+# global aliases for this (lib/directories.zsh), but they stop at five levels and
+# are only expanded when the line is run, so "cd .../src<TAB>" cannot complete.
+# Rewriting the buffer instead means completion sees a real path. The aliases stay
+# harmless -- the buffer no longer contains a bare "..." for them to match.
+#
+# The leading delimiter check is what the published versions of this widget
+# (wazum/zsh-directory-dot-expansion, the rationalise-dot snippet) leave out. They
+# expand on any trailing "..", which corrupts "git diff a...b" and "git log
+# HEAD~2...". Requiring the dots to start a word -- at the start of the line, or
+# after whitespace, "=", ":" or "/" -- keeps those literal, while the "/" case is
+# what lets an already-expanded "../.." grow another level.
+#
+# This has to come after oh-my-zsh.sh: vi-mode calls "bindkey -v", which resets
+# the viins keymap and would drop the binding. Binding "." in isearch back to
+# self-insert keeps Ctrl-R searches typeable, since the isearch keymap otherwise
+# falls through to main and would run the widget against a search buffer.
+_expand_dot_to_parent() {
+  if [[ $LBUFFER =~ '(^|[[:space:]=:/])\.\.$' ]]; then
+    LBUFFER+='/..'
+  else
+    LBUFFER+='.'
+  fi
+}
+zle -N _expand_dot_to_parent
+bindkey -M viins '.' _expand_dot_to_parent
+bindkey -M emacs '.' _expand_dot_to_parent
+bindkey -M isearch '.' self-insert
 
 # Map the checked-in Fish theme to zsh-syntax-highlighting token classes.
 if (( ${+parameters[ZSH_HIGHLIGHT_STYLES]} )); then
@@ -130,15 +172,44 @@ if (( $+commands[bat] )); then
   export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 fi
 
+# Oh My Zsh aliases ls (lib/theme-and-appearance.zsh) and la (lib/directories.zsh).
+# zsh refuses to define a function whose name is an active alias, and an alias
+# would shadow the function even if it were defined, so both have to go. This must
+# stay outside the block below: zsh parses a compound command in full before
+# running any of it, so an unalias in there would come too late to help.
+unalias ls la lst lt ltd 2>/dev/null
+
+# Nerd Font icons live in the Unicode Private Use Area; less's default
+# printable-character table treats PUA codepoints as binary and renders
+# them as <U+XXXX> instead of the glyph. Mark them printable explicitly.
+export LESSUTFCHARDEF='E000-F8FF:p,F0000-FFFFD:p,100000-10FFFD:p'
+
 if (( $+commands[eza] )); then
-  alias ls='eza -a1 --color=always --group-directories-first --icons'
-  alias la='eza -la --color=always --group-directories-first --icons'
-  alias lst='eza -a1 --color=always --group-directories-first --icons --sort=modified'
-  alias lt='eza -aT --color=always --group-directories-first --icons'
-  alias ltd='eza -aDT --color=always --icons'
+  # --icons takes an optional WHEN value, so it must be written --icons=always;
+  # a bare trailing --icons swallows the first path argument as its value.
+  #
+  # Functions, not aliases: an alias appends its arguments after the entire body,
+  # so a piped alias would hand paths to less instead of eza. less -F prints
+  # normally when the output fits on one screen and only becomes scrollable when
+  # it doesn't; -R keeps the colours and icons, -X leaves the output in
+  # scrollback instead of clearing on exit. When stdout is not a terminal less
+  # just passes everything through, so $(ls) and scripts are unaffected.
+  #
+  # No --width here: eza only needs it to keep grid columns when piped, and none
+  # of these use grid -- long and tree views ignore width entirely.
+  _ezap() { eza --color=always --icons=always "$@" | less -FRX; }
+  ls()  { _ezap -a1 --group-directories-first "$@"; }
+  la()  { _ezap -la --group-directories-first "$@"; }
+  lst() { _ezap -a1 --group-directories-first --sort=modified "$@"; }
+  lt()  { _ezap -aT --group-directories-first "$@"; }
+  ltd() { _ezap -aDT "$@"; }
   alias l.='eza -a --color=always | grep -E "^\."'
 fi
 alias lo='/bin/ls'
+
+# Type a tidbit from any terminal: `tidbit some idea`, or bare for $EDITOR.
+# Guarded because ~/bin only exists once this repo's bin/ has been stowed.
+[[ -x "$HOME/bin/tidbit" ]] && alias tidbit="$HOME/bin/tidbit"
 
 y() {
   local tmp cwd
@@ -164,8 +235,12 @@ do
 done
 unset conda_exe
 
-[[ -r "$HOME/.p10k.zsh" ]] && builtin source "$HOME/.p10k.zsh"
+# The export also redirects `p10k configure`, which would otherwise write a
+# fresh ~/.p10k.zsh instead of updating this one.
+export POWERLEVEL9K_CONFIG_FILE="$HOME/.config/zsh/p10k.zsh"
+[[ -r "$POWERLEVEL9K_CONFIG_FILE" ]] && builtin source "$POWERLEVEL9K_CONFIG_FILE"
 
-# Kiro CLI post block. Keep at the bottom of this file.
-[[ -f "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh" ]] &&
-  builtin source "${HOME}/Library/Application Support/kiro-cli/shell/zshrc.post.zsh"
+export EDITOR="nvim"
+export VISUAL="nvim"
+
+[ -f ~/.config/zsh/company.zsh ] && source ~/.config/zsh/company.zsh

@@ -1,8 +1,32 @@
 -- theme & transparency
-vim.cmd.colorscheme("unokai")
-vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
-vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "none" })
+-- "mine" is the local scheme in colors/mine.lua, built from the same palette as
+-- ~/.config/fish/themes/mine.theme. It handles transparency itself, so the
+-- Normal/NormalNC/EndOfBuffer overrides that used to live here are gone.
+-- See the comment block at the top of colors/mine.lua for every tunable.
+-- Any role accepts any palette name: cyan blue sky | pale rose hot neon |
+-- purple lilac violet peri | mint amber gold orange green olive red | fg dim mute
+vim.g.mine = {
+  variables = "sky", -- + "params" | "plain" to narrow or disable
+  builtins = "lilac", -- self / this
+  paths = "cyan", -- path and URL strings, links, directories
+  functions = "orange",
+  keywords = "rose", -- def / class / try / return
+  imports = "hot", -- import / from, decorators, macros
+  numbers = "amber",
+  types = "purple",
+  operators = "fg",
+  properties = "blue",
+  delimiters = "dim",
+  brackets = "dim",
+  visual = "muted", -- "muted" | "amber"
+  picker = "muted", -- selected row: "muted" | "amber"
+  menu = "dim", -- completion menu text: "dim" | "fg"
+  search = "mint", -- current match: "mint" | "magenta" | "amber"
+  italic = true,
+  transparent = true,
+  terminal = true,
+}
+vim.cmd.colorscheme("mine")
 
 -- Basic settings
 vim.opt.number = true
@@ -117,6 +141,14 @@ vim.keymap.set({ "n", "x" }, "<C-j>", "<C-w>j", { desc = "Move to bottom window"
 vim.keymap.set({ "n", "x" }, "<C-k>", "<C-w>k", { desc = "Move to top window" })
 vim.keymap.set({ "n", "x" }, "<C-l>", "<C-w>l", { desc = "Move to right window" })
 
+-- Same, from inside a terminal (Claude, yazi): leave terminal mode first.
+-- Note this takes these keys away from the program running in the terminal,
+-- e.g. <C-l> no longer clears the screen in a shell.
+vim.keymap.set("t", "<C-h>", "<C-\\><C-n><C-w>h", { desc = "Move to left window" })
+vim.keymap.set("t", "<C-j>", "<C-\\><C-n><C-w>j", { desc = "Move to bottom window" })
+vim.keymap.set("t", "<C-k>", "<C-\\><C-n><C-w>k", { desc = "Move to top window" })
+vim.keymap.set("t", "<C-l>", "<C-\\><C-n><C-w>l", { desc = "Move to right window" })
+
 -- Move lines up/down
 vim.keymap.set("n", "<A-j>", ":m .+1<CR>", { desc = "Move line down" })
 vim.keymap.set("n", "<A-k>", ":m .-2<CR>", { desc = "Move line up" })
@@ -132,8 +164,8 @@ vim.keymap.set("v", "<Tab>", ">gv", { desc = "Indent and reselect" })
 vim.keymap.set("v", "<S-Tab>", "<gv", { desc = "Unindent and reselect" })
 
 -- Quick file navigation
-vim.keymap.set("n", "<leader>e", ":Explore<CR>", { desc = "Open file explorer" })
-vim.keymap.set("n", "<leader>ff", ":find ", { desc = "Find file" })
+-- <leader>e opens yazi (see plugins/mikavilpas.yazi.nvim.lua), which disables netrw
+-- <leader>f* are Telescope pickers (see plugins/nvim-telescope.telescope.nvim.lua)
 
 -- Quick config editing
 vim.keymap.set("n", "<leader>rc", ":e ~/.config/nvim/lua/config/main.lua<CR>", { desc = "Edit config" })

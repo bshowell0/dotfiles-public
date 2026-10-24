@@ -10,3 +10,17 @@ __pycache__/
 .zcompdump*
 .zsh_history
 .zsh_sessions/
+
+# global ignore has `.claude/`; this repo is the one place it should be tracked
+!/.claude/
+# work context — contains company-internal details, keep out of the public repo
+/.claude/CLAUDE.md
+
+# Machine-local shell config, sourced from ~/.config/zsh/ if present. Normally a
+# real dir outside the repo, but on a machine where ~/.config/zsh didn't exist
+# before stowing, stow symlinks the whole dir here and these would land in-repo.
+/.config/zsh/company.zsh
+/.config/zsh/secrets.env
+
+# Codex configuration and state are machine-local.
+/.codex/

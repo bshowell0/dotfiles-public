@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # This is a demo config to showcase some of the most important commands.
 # It is meant to be changed and configured, as it is intentionally kept sparse.
 # For a (much) more advanced configuration example see my dotfiles:
@@ -23,7 +24,7 @@ default=(
   padding_left=5
   padding_right=5
   icon.font="JetBrainsMono Nerd Font:Bold:18.0"
-  label.font="JetBrains Mono:Bold:16.0"
+  label.font="JetBrainsMono Nerd Font:Bold:16.0"
   icon.color=0xffffffff
   label.color=0xffffffff
   icon.padding_left=4

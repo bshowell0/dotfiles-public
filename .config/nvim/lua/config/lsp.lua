@@ -30,7 +30,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts) -- show lsp type definitions
 
     opts.desc = "See available code actions"
-    keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
+    keymap.set({ "n", "v" }, "<leader>.", vim.lsp.buf.code_action, opts) -- see available code actions, in visual mode will apply to selection
 
     opts.desc = "Smart rename"
     keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts) -- smart rename
@@ -39,7 +39,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts) -- show  diagnostics for file
 
     opts.desc = "Show line diagnostics"
-    keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts) -- show diagnostics for line
+    keymap.set("n", "gl", vim.diagnostic.open_float, opts) -- show diagnostics for line
 
     opts.desc = "Go to previous diagnostic"
     keymap.set("n", "[d", function()
@@ -71,3 +71,16 @@ vim.diagnostic.config({
     },
   },
 })
+
+-- DISABLED: auto-show line diagnostics in a hover float, no keypress needed.
+-- Uncomment the block below to enable; it removes the need to press `gl`.
+-- Fires once the cursor sits still for 'updatetime' (300ms, set in main.lua), and shows
+-- only the diagnostics under the cursor. `focus = false` means it never steals the
+-- cursor, and the float self-closes on the next cursor move or on entering insert mode.
+-- Note: `gl` stays useful either way, for when you don't want to wait out the idle delay.
+-- vim.api.nvim_create_autocmd("CursorHold", {
+--   group = vim.api.nvim_create_augroup("UserDiagnosticFloat", { clear = true }),
+--   callback = function()
+--     vim.diagnostic.open_float(nil, { focus = false, scope = "cursor" })
+--   end,
+-- })

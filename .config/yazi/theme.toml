@@ -1,3 +1,4 @@
+# Local colors for both the interface and file previews, in every terminal.
 [flavor]
-dark  = "dracula"
-light = "dracula"
+dark = "mine"
+light = "mine"

@@ -1,0 +1,29 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "deny": [
+      "Read(./.config/zsh/secrets.env)",
+      "Read(**/*.env)"
+    ],
+    "defaultMode": "auto"
+  },
+  "model": "opus[1m]",
+  "worktree": {
+    "bgIsolation": "none"
+  },
+  "effortLevel": "xhigh",
+  "askUserQuestionTimeout": "never",
+  "tui": "fullscreen",
+  "theme": "dark",
+  "editorMode": "vim",
+  "verbose": false,
+  "preferredNotifChannel": "auto",
+  "autoScrollEnabled": true,
+  "modelSettings": {
+    "claude-fable-5-1": {
+      "effortLevel": "high"
+    }
+  }
+}

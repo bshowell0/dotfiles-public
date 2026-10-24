@@ -41,7 +41,8 @@ end
 # Replace ls with eza
 alias ls='eza -a1 --color=always --group-directories-first --icons' # preferred listing
 # alias la is a fish builtin alias for `ls -lAh $argv`              # long format
-alias lst='eza -a1 --color=always --group-directories-first --icons --sort=modified'
+# alias lst='eza -a1 --color=always --group-directories-first --icons --sort=modified'
+alias lst='eza -a1 --color=always --icons --sort=modified --reverse' # newest modified files/dirs first
 alias lt='eza -aT --color=always --group-directories-first --icons' # tree listing
 alias ltd='eza -aDT --color=always --icons'                         # tree directories
 alias l.="eza -a | grep -e '^\.'"                                   # show only dotfiles

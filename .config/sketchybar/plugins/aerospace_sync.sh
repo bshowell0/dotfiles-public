@@ -1,6 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Reconcile the workspace chips against AeroSpace's live workspace list.
+#
+# aerospace.toml sets config-version = 2 with persistent-workspaces = [], so empty
+# workspaces are destroyed on the fly and `list-workspaces --all` is already the exact
+# set worth showing: deduped, sorted, and spanning every monitor. That means no
+# per-monitor merging, no sorting and no hide-pass are needed here.
+#
+# We reconcile deltas rather than rebuilding from scratch: removing every chip and
+# re-adding it on each workspace change makes the row visibly flicker. On a plain
+# workspace switch the chip set is unchanged, so all that goes out is a couple of
+# drawing toggles.
+
 # Find aerospace (GUI shells often miss Homebrew PATH)
 AEROSPACE_BIN="${AEROSPACE_BIN:-/opt/homebrew/bin/aerospace}"
 if ! command -v "$AEROSPACE_BIN" >/dev/null 2>&1; then
@@ -10,24 +22,37 @@ fi
 
 FOCUSED="${FOCUSED_WORKSPACE:-$("$AEROSPACE_BIN" list-workspaces --focused 2>/dev/null || true)}"
 
-# Collect non-empty workspaces across monitors
-MONS="$("$AEROSPACE_BIN" list-monitors | awk '{print $1}')"
-wanted_raw="$(
-  for m in $MONS; do
-    "$AEROSPACE_BIN" list-workspaces --monitor "$m" --empty no || true
-  done | awk 'NF'
-)"
-# Dedupe + add focused (if not already present), then sort alphanumerically
-wanted="$(printf '%s\n%s\n' "$wanted_raw" "${FOCUSED:-}" \
-         | awk 'NF' | sort -uV)"   # -V = version sort, handles 1,2,10 and A,B,C
+wanted="$("$AEROSPACE_BIN" list-workspaces --all)"
 
-has_item() { sketchybar --query "space.$1" >/dev/null 2>&1; }
+# Scrape the chip names straight out of the bar query with bash's own regex rather
+# than piping to jq. This runs on every workspace switch, and the chips visibly lag
+# the app-name label if it gets slow, so the whole path avoids subprocesses where it
+# reasonably can -- see in_list below for the same reason.
+existing="$(sketchybar --query bar | while IFS= read -r line; do
+  [[ $line =~ \"space\.([A-Za-z0-9_-]+)\" ]] && printf '%s\n' "${BASH_REMATCH[1]}" || true
+done)"
+
+# Pure-bash membership test; a printf|grep here costs two processes per call, and it
+# gets called once per workspace on both lists.
+in_list() { case $'\n'"$2"$'\n' in *$'\n'"$1"$'\n'*) return 0 ;; *) return 1 ;; esac; }
 
 args=()
 
-# 1) Ensure every "wanted" chip exists (start hidden) and is anchored after the separator
+# Drop chips whose workspace no longer exists. Removing an item leaves the relative
+# order of the survivors untouched, so this needs no repositioning afterwards.
+for sid in $existing; do
+  if ! in_list "$sid" "$wanted"; then
+    args+=( --remove "space.$sid" )
+  fi
+done
+
+# Create chips for workspaces that don't have one yet. New items land at the end of
+# the left region, so each new chip -- and only it -- gets a single --move into its
+# sorted slot, anchored to whichever chip precedes it. Walking $wanted in order means
+# that anchor is always already on the bar by the time the move applies.
+prev="separator"
 for sid in $wanted; do
-  if ! has_item "$sid"; then
+  if ! in_list "$sid" "$existing"; then
     args+=(
       --add item "space.$sid" left
       --set "space.$sid"
@@ -36,38 +61,23 @@ for sid in $wanted; do
         background.drawing=off
         label="$sid" label.padding_left=5 label.padding_right=5
         click_script="$AEROSPACE_BIN workspace $sid"
-        drawing=off
+      --move "space.$sid" after "$prev"
     )
   fi
-done
-
-# 2) Visibility: hide all known, then show wanted-minus-focused
-#    (get all known SIDs from AeroSpace; we only "set" for ones that already exist)
-all_sids="$(
-  for m in $MONS; do
-    "$AEROSPACE_BIN" list-workspaces --monitor "$m" --empty yes || true
-  done | awk 'NF' | sort -uV
-)"
-# Hide everything
-for sid in $all_sids; do
-  args+=( --set "space.$sid" drawing=off )
-done
-# Show all wanted except the focused
-visible_sorted="$(printf '%s\n' "$wanted" | awk -v f="$FOCUSED" '$0!=f')"
-for sid in $visible_sorted; do
-  args+=( --set "space.$sid" drawing=on )
-done
-
-# 3) Order: move chips in alphanumeric order to appear right of the separator
-prev="separator"
-for sid in $visible_sorted; do
-  args+=( --move "space.$sid" after "$prev" )
   prev="space.$sid"
 done
 
-# 4) Keep the pill label synced & make sure focused chip stays hidden
-[ -n "${FOCUSED:-}" ] && args+=( --set focused_workspace label="$FOCUSED" )
-[ -n "${FOCUSED:-}" ] && args+=( --set "space.$FOCUSED" drawing=off )
+# Show every chip except the focused one (the pill already shows that)
+for sid in $wanted; do
+  if [ "$sid" = "$FOCUSED" ]; then
+    args+=( --set "space.$sid" drawing=off )
+  else
+    args+=( --set "space.$sid" drawing=on )
+  fi
+done
 
-# Fire once
-[ ${#args[@]} -gt 0 ] && sketchybar "${args[@]}"
+if [ -n "$FOCUSED" ]; then
+  args+=( --set focused_workspace label="$FOCUSED" )
+fi
+
+sketchybar "${args[@]}"

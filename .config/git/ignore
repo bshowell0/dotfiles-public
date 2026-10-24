@@ -12,7 +12,11 @@ IMPLEMENTATION-SUMMARY.md
 .agent
 copilot-instructions.md
 AGENTS.md
-CLAUDE.md
+.tidbit/
+.randd/
+.claude/
+CLAUDE.local.md
+# CLAUDE.md
 
 # latex stuff
 *.aux

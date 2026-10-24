@@ -1,3 +1,14 @@
+-- The pinned main branch manages parsers through install()/update().
+-- The legacy highlight, indent, ensure_installed, and incremental_selection
+-- options below do not enable those features or install parsers on this branch.
+--
+-- Parsers installed separately live in Neovim's machine-local data directory;
+-- their presence cannot be inferred from this configuration or the lockfile.
+-- The FileType autocmd in config/main.lua starts highlighting when a parser is
+-- available. colors/mine.lua also styles legacy syntax for files without one.
+--
+-- TODO: migrate the language list to require("nvim-treesitter").install(), use
+-- the main-branch indentexpr API, and replace the old incremental-selection maps.
 return {
    "nvim-treesitter/nvim-treesitter",
    build = ":TSUpdate",
@@ -5,16 +16,16 @@ return {
       -- import nvim-treesitter plugin
       local treesitter = require("nvim-treesitter")
 
-      -- configure treesitter
-      treesitter.setup({ -- enable syntax highlighting
+      -- Legacy configuration retained pending the main-branch migration above.
+      treesitter.setup({ -- These legacy options are inactive on main.
          highlight = {
             enable = true,
             disable = { "latex" },
             additional_vim_regex_highlighting = false,
          },
-         -- enable indentation
+         -- Legacy indentation options.
          indent = { enable = true },
-         -- ensure these language parsers are installed
+         -- Desired parser list; this option does not install them on main.
          ensure_installed = {
              "agda",
              "c",

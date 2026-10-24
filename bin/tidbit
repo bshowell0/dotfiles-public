@@ -1,0 +1,51 @@
+#!/bin/bash
+#
+# Type a tidbit instead of speaking one.
+#
+#   tidbit could batch the tokenizer prep step   -- files that text directly
+#   tidbit                                       -- opens $EDITOR; :wq files, :q! aborts
+#
+# Both forms hand off to tidbit-file.sh, the same filer the voice path uses, so
+# routing, topic matching and the file format are identical across transports.
+#
+# Detached like the voice path: the claude call takes a while, so the prompt
+# comes back immediately and the filed path arrives as a notification.
+
+set -uo pipefail
+
+# Overridable so the front end can be exercised without spending a claude call
+# or writing to the real vault.
+FILER="${TIDBIT_FILER:-$HOME/bin/tidbit-file.sh}"
+
+[[ -x "$FILER" ]] || { echo "tidbit: filer missing at $FILER" >&2; exit 1; }
+
+# $$ as well as the timestamp: two tidbits in the same second would otherwise
+# share a scratch file, and the second would clobber the first mid-flight.
+STAMP=$(date +%Y-%m-%d_%H%M%S)
+NOTE_FILE="/tmp/tidbit-$STAMP-$$.md"
+LOG="/tmp/tidbit-$STAMP-$$.log"
+
+if (( $# )); then
+  printf '%s\n' "$*" >"$NOTE_FILE" || { echo "tidbit: couldn't write $NOTE_FILE" >&2; exit 1; }
+else
+  : >"$NOTE_FILE" || { echo "tidbit: couldn't write $NOTE_FILE" >&2; exit 1; }
+  # Split $EDITOR on whitespace the way git does, so a value carrying flags
+  # ("code -w", "nvim --clean") runs instead of being looked up as one long
+  # command name.
+  read -ra ED <<<"${EDITOR:-nvim}"
+  "${ED[@]}" "$NOTE_FILE"
+fi
+
+# A whitespace-only buffer means "never mind" — :q! without writing, or a saved
+# blank file. Bail before spending a claude call on nothing.
+if [[ -z "$(tr -d '[:space:]' <"$NOTE_FILE")" ]]; then
+  rm -f "$NOTE_FILE"
+  echo "tidbit: nothing captured."
+  exit 0
+fi
+
+# The filer needs the scratch file after this script exits, so it can't be
+# cleaned up here. It's in /tmp and the text itself lands in the vault.
+nohup "$FILER" "$NOTE_FILE" --source typed --log "$LOG" >/dev/null 2>&1 &
+
+echo "capturing…"

@@ -3,10 +3,18 @@
 # Reload config
 keybind = super+shift+comma=reload_config
 
+# Shift+Enter sends a literal newline (^J) instead of carriage return, so TUIs
+# like Claude Code insert a line break rather than submitting.
+keybind = shift+enter=text:\n
+
 background=#1c1c20
-background-opacity=0.90
+background-opacity=0.85
 background-blur=10
-split-divider-color = #888888
+split-divider-color=#888888
+
+# No `palette` here, so ANSI 0-15 are ghostty's stock colours -- but Neovim sets
+# its own via terminal_color_* (see colors/mine.lua), so eza/bat/git look
+# different inside a :terminal buffer than they do in a plain ghostty window.
 
 shell-integration-features=no-cursor
 cursor-style=block
