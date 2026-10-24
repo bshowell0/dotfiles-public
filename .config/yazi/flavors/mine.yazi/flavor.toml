@@ -6,7 +6,7 @@
 overall = { bg = "#1c1c20" }
 
 [mgr]
-cwd = { fg = "#39BAE6" }
+cwd = { fg = "#33B3D3" }
 find_keyword = { fg = "#ff79c6", bold = true, underline = true }
 find_position = { fg = "#E6B450", bg = "#1c1c20", bold = true }
 symlink_target = { fg = "#878787", italic = true }
@@ -58,18 +58,18 @@ separator_style = { fg = "#4e4e55" }
 border = { fg = "#4e4e55" }
 title = { fg = "#E6B450", bold = true }
 body = { fg = "#B3B1AD" }
-list = { fg = "#39BAE6" }
+list = { fg = "#33B3D3" }
 btn_yes = { fg = "#1c1c20", bg = "#66dd44", bold = true }
 btn_no = { fg = "#878787" }
 
 [spot]
 border = { fg = "#4e4e55" }
 title = { fg = "#E6B450" }
-tbl_col = { fg = "#39BAE6" }
+tbl_col = { fg = "#33B3D3" }
 tbl_cell = { fg = "#B3B1AD", bg = "#4d4230" }
 
 [notify]
-title_info = { fg = "#39BAE6" }
+title_info = { fg = "#33B3D3" }
 title_warn = { fg = "#E6B450" }
 title_error = { fg = "#FF3333" }
 icon_info = ""
@@ -112,6 +112,6 @@ rules = [
     { mime = "vfs/{absent,stale}", fg = "#878787" },
     { url = "*", is = "orphan", fg = "#FF3333" },
     { url = "*", is = "exec", fg = "#66dd44" },
-    { url = "*/", fg = "#39BAE6" },
+    { url = "*/", fg = "#33B3D3" },
     { url = "*", fg = "#B3B1AD" },
 ]

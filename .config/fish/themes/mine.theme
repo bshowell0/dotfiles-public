@@ -10,7 +10,7 @@ fish_color_escape 95E6CB
 fish_color_history_current --bold
 fish_color_host normal
 fish_color_host_remote yellow
-fish_color_keyword 39BAE6
+fish_color_keyword 33B3D3
 fish_color_match --background=brblue
 fish_color_normal B3B1AD
 fish_color_operator E6B450
@@ -27,7 +27,7 @@ fish_pager_color_background
 fish_pager_color_completion normal
 fish_pager_color_description B3A06D
 fish_pager_color_prefix 'normal'  '--bold'  '--underline=single'
-fish_pager_color_progress 'brwhite'  '--bold'  '--background=cyan'
+fish_pager_color_progress 'brwhite'  '--bold'  '--background=33B3D3'
 fish_pager_color_secondary_background
 fish_pager_color_secondary_completion
 fish_pager_color_secondary_description

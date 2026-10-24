@@ -1,0 +1,24 @@
+# Accent palette shared with Neovim and Yazi; lighter canvas for opaque Rex.
+# Import in Rex with client.theme.import; see docs/manual-setup/rex.md.
+background = #22232c
+foreground = #d5d4ce
+cursor-color = #d5d4ce
+cursor-text = #22232c
+selection-background = #4d4230
+selection-foreground = #d5d4ce
+palette = 0=#22232c
+palette = 1=#FF3333
+palette = 2=#66dd44
+palette = 3=#E6B450
+palette = 4=#00afff
+palette = 5=#ff5fff
+palette = 6=#33B3D3
+palette = 7=#d5d4ce
+palette = 8=#878787
+palette = 9=#ff6b6b
+palette = 10=#8ce65c
+palette = 11=#ffd580
+palette = 12=#59C2FF
+palette = 13=#ff9bff
+palette = 14=#95E6CB
+palette = 15=#FFFFFF

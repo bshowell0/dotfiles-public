@@ -28,7 +28,7 @@ export FZF_DEFAULT_OPTS="${FZF_DEFAULT_OPTS:+$FZF_DEFAULT_OPTS }\
 --color=fg:#B3B1AD,bg:#1c1c20,hl:#E6B450,\
 fg+:#1c1c20,bg+:#E6B450,hl+:#1c1c20,\
 info:#B3A06D,prompt:#af87ff,pointer:#ff5fff,\
-marker:#66dd44,spinner:#39BAE6,header:#B3A06D"
+marker:#66dd44,spinner:#33B3D3,header:#B3A06D"
 
 # Configure completion before Oh My Zsh runs compinit.
 zstyle ':completion:*' menu no
@@ -124,7 +124,7 @@ bindkey -M isearch '.' self-insert
 if (( ${+parameters[ZSH_HIGHLIGHT_STYLES]} )); then
   ZSH_HIGHLIGHT_STYLES[default]='fg=#B3B1AD'
   ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#FF3333'
-  ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=#39BAE6'
+  ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=#33B3D3'
   ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=#ff8700'
   ZSH_HIGHLIGHT_STYLES[command]='fg=#af87ff'
   ZSH_HIGHLIGHT_STYLES[hashed-command]='fg=#af87ff'

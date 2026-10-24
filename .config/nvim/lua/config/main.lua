@@ -1,3 +1,11 @@
+do
+  -- Prefer Nvim's bundled Lua parser over stale plugin-installed parsers.
+  local bundled_lua_parser = vim.env.VIMRUNTIME and (vim.env.VIMRUNTIME .. "/parser/lua.so")
+  if bundled_lua_parser and vim.uv.fs_stat(bundled_lua_parser) then
+    vim.treesitter.language.add("lua", { path = bundled_lua_parser })
+  end
+end
+
 -- theme & transparency
 -- "mine" is the local scheme in colors/mine.lua, built from the same palette as
 -- ~/.config/fish/themes/mine.theme. It handles transparency itself, so the

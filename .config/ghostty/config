@@ -12,9 +12,10 @@ background-opacity=0.85
 background-blur=10
 split-divider-color=#888888
 
-# No `palette` here, so ANSI 0-15 are ghostty's stock colours -- but Neovim sets
-# its own via terminal_color_* (see colors/mine.lua), so eza/bat/git look
-# different inside a :terminal buffer than they do in a plain ghostty window.
+# Share cyan with the custom shell, Neovim, Yazi, and Rex themes.
+# Other ANSI slots retain Ghostty's defaults; Neovim sets its full terminal
+# palette separately in colors/mine.lua.
+palette = 6=#33B3D3
 
 shell-integration-features=no-cursor
 cursor-style=block

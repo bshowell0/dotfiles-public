@@ -8,7 +8,7 @@
 --
 -- So the blues were split up by how often each role appears, rather than being
 -- three interchangeable shades: #59C2FF on variables (dense), #00afff on object
--- members (frequent), #39BAE6 underlined on paths and URLs. The roles that used
+-- members (frequent), #33B3D3 underlined on paths and URLs. The roles that used
 -- to compete for a blue moved onto colours freed up elsewhere: functions took
 -- orange, types took the purple functions vacated.
 --
@@ -80,7 +80,7 @@ local p = {
   fg = "#B3B1AD", -- fish_color_normal / option
   dim = "#878787", -- fish_color_autosuggestion
   purple = "#af87ff", -- fish_color_command
-  cyan = "#39BAE6", -- fish_color_keyword
+  cyan = "#33B3D3", -- fish_color_keyword
   blue = "#00afff", -- fish_color_param
   sky = "#59C2FF", -- fish_color_cwd
   green = "#66dd44", -- fish_color_quote
